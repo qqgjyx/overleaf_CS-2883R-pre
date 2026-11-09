@@ -62,12 +62,13 @@
 \begin{frame}[plain]
   \vfill
   {\LARGE\bfseries Latent Action Pretraining from Videos}\\[6pt]
-  {\large\color{mute} Pretraining a robot policy on video, with no action labels}\\[-4pt]
-  \textcolor{crimson}{\rule{\textwidth}{0.8pt}}\\[8pt]
-  Juntang Wang $\cdot$ Vivian Hui\\[2pt]
-  {\small\color{crimson} Harvard CS 2883R $\cdot$ 18 Nov 2026}\\[10pt]
+
+ 
   {\scriptsize\color{mute} Seonghyeon Ye, Joel Jang, et al.: KAIST, UW, Microsoft Research, NVIDIA, AI2.\\
     Latent Action Pretraining from Videos. ICLR 2025. arXiv 2410.11758}
+
+      \textcolor{crimson}{\rule{\textwidth}{0.8pt}}\\[8pt]
+  Juntang Wang $\cdot$ Vivian Hui\\[2pt]
   \vfill
 \end{frame}
 
@@ -375,21 +376,13 @@
 
 % 15. Discussion  -- the 15 minutes end here; call on the roles
 \begin{frame}{Discussion}
-  \begin{columns}[t]
-    \column{0.42\textwidth}
-      {\small\bfseries Roles, in call order}\\[4pt]
-      \tbd{\linewidth}{3.4cm}{From the Ed post and the role sheet (second tab). 5 minutes each.}
-    \column{0.54\textwidth}
-      {\small\bfseries Open questions}
-      \footnotesize
-      \begin{itemize}\setlength{\itemsep}{6pt}
-        \item What can a code between two frames never capture: force, grasp timing, speed?
-        \item Is the gain from the latent actions, or from a backbone already trained on
-          video? Nothing in the paper swaps it out
-        \item What would have to be true before a decoder rollout could stand in for a
-          real-robot trial?
-      \end{itemize}
-  \end{columns}
+  \begin{itemize}\setlength{\itemsep}{6pt}
+    \item What can a code between two frames never capture: force, grasp timing, speed?
+    \item Is the gain from the latent actions, or from a backbone already trained on
+      video? Nothing in the paper swaps it out
+    \item What would have to be true before a decoder rollout could stand in for a
+      real-robot trial?
+  \end{itemize}
 \end{frame}
 
 %% ---- backup ----

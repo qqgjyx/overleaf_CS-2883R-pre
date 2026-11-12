@@ -6,7 +6,7 @@
 % are drawn by hand); equations, full tables and protocol details live in the backup.
 % The presenter speaks as the first author (course guidelines): our critique lives in the
 % Discussion questions and the "Our reading" backup, for the reviewer and red-team roles.
-% 15:00 for two speakers, about 13:45 budgeted. Handoff after planning.
+% 15:00 for two speakers, about 13:45 budgeted. Vivian S1-3 (to planning), Juntang S4-6.
 % If long, cut "Why gripper points" first. LAPA deck: git tag lapa-final.
 % Build: latexmk -pdf main.tex
 \documentclass[aspectratio=169,12pt]{beamer}
@@ -72,7 +72,7 @@
   \vfill
 \end{frame}
 
-%% ---- Part A: problem and method, about 7:15 ----
+%% ---- Part A (Vivian, S1-3): problem and method, about 6:00 ----
 
 % 1. Problem  1:00  (S1, Fig. 1, abstract)
 \begin{frame}{Problem}
@@ -173,23 +173,7 @@
   \end{notes}
 \end{frame}
 
-% 6. Data  1:15  (S4, Fig. 5)
-\begin{frame}{Data: re-annotating DROID in 3D}
-  \centering
-  \paperfig{height=4.0cm}{figs/fig5a_annotation.pdf}{Fig.~5, top}
-  \vfill
-  \begin{notes}[0.86\linewidth]
-    \item DROID \src{khazatsky2024droid}: real teleoperation, but its depth and camera
-      poses are off. Three fixes: depth from FoundationStereo \src{wen2025foundationstereo}, poses
-      from VGGT \src{wang2025vggt} refined against the robot mesh, CoTracker3
-      \src{karaev2025cotracker3} tracks lifted to 3D
-    \item \pw{Over 60\% of DROID survives, about 200 hours}. With BEHAVIOR-1K simulation
-      \src{li2024behavior}, the total is about 2M trajectories, 500 hours
-  \end{notes}
-  \vfill
-\end{frame}
-
-% 7. Planning  0:45  (S3.2, Eq. 2, App. real-robot details)
+% 6. Planning  0:45  (S3.2, Eq. 2, App. real-robot details)
 \begin{frame}{Planning with the model}
   \small
   \[
@@ -208,9 +192,25 @@
   \end{notes}
 \end{frame}
 
-%% ==== HANDOFF: second speaker starts here (split to agree with Vivian) ====
+%% ==== HANDOFF: Vivian presents S1-3 above, Juntang S4-6 below ====
 
-%% ---- Part B: evidence, about 6:30 ----
+%% ---- Part B: data and evidence, about 7:45 ----
+
+% 7. Data  1:15  (S4, Fig. 5)
+\begin{frame}{Data: re-annotating DROID in 3D}
+  \centering
+  \paperfig{height=4.0cm}{figs/fig5a_annotation.pdf}{Fig.~5, top}
+  \vfill
+  \begin{notes}[0.86\linewidth]
+    \item DROID \src{khazatsky2024droid}: real teleoperation, but its depth and camera
+      poses are off. Three fixes: depth from FoundationStereo \src{wen2025foundationstereo}, poses
+      from VGGT \src{wang2025vggt} refined against the robot mesh, CoTracker3
+      \src{karaev2025cotracker3} tracks lifted to 3D
+    \item \pw{Over 60\% of DROID survives, about 200 hours}. With BEHAVIOR-1K simulation
+      \src{li2024behavior}, the total is about 2M trajectories, 500 hours
+  \end{notes}
+  \vfill
+\end{frame}
 
 % 8. How it is scored  0:45  (S4 evaluation protocol, Fig. 6 top two rows)
 \begin{frame}{How it is scored}

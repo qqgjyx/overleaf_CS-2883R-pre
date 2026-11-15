@@ -1,17 +1,10 @@
-% PointWorld presenter deck. CS 2883R, Wed 18 Nov 2026. Juntang Wang and Vivian Hui.
-% Numbers checked against arXiv 2601.03782v1; each frame comment names its source.
-% Rules: one claim per frame, at most 3 bullets, no bullet restating its own figure;
-% teal marks PointWorld or the one number to carry; l2 errors are in metres, so 0.001 is
-% 1 mm; zero-shot means no demos and no finetuning, not no human input (masks and targets
-% are drawn by hand); equations, full tables and protocol details live in the backup.
-% The presenter speaks as the first author (course guidelines): our critique lives in the
-% Discussion questions and the "Our reading" backup, for the reviewer and red-team roles.
-% 15:00 for two speakers, about 13:45 budgeted. Vivian S1-3 (to planning), Juntang S4-6.
-% If long, cut "Why gripper points" first. LAPA deck: git tag lapa-final.
-% Build: latexmk -pdf main.tex
+% PointWorld presenter deck. CS 2883R, 18 Nov 2026. Juntang Wang, Vivian Hui.
+% Numbers from arXiv 2601.03782v1; frame comments name the source. l2 is in metres.
+% Presenter speaks as first author; critique lives in Discussion and "Backup: our reading".
+% 15:00: Vivian S1-3 (~8:00), Juntang S4-6 (~7:00). If long, trim Data and Real robot.
+% LAPA deck: tag lapa-final. Build: latexmk -pdf main.tex
 \documentclass[aspectratio=169,12pt]{beamer}
 \usetheme[progressbar=none, numbering=counter]{moloch}
-%howdy
 \usepackage[sfdefault,light]{FiraSans}
 \usepackage[T1]{fontenc}
 \usepackage{tikz}
@@ -22,8 +15,7 @@
 \hypersetup{colorlinks=true, citecolor=cite, urlcolor=cite, linkcolor=.}
 \renewcommand{\bibsection}{}                          % the frame title is enough
 \bibliographystyle{plainnat}
-% Beamer 3.77 + current hyperref leave natbib's \hyper@natlinkbreak empty, which drops the
-% ", " in (Author et al., 2024) and the " (" in Author et al. (2024). Restore hyperref's definition.
+% natbib fix: Beamer + hyperref drop the ", " in author-year citations.
 \makeatletter
 \AddToHook{begindocument/end}{%
   \def\hyper@natlinkbreak#1#2{\hyper@linkend#1\hyper@linkstart{cite}{cite.#2}}}
@@ -57,7 +49,7 @@
 
 \begin{document}
 
-% 0. Title  0:15
+% Title
 \begin{frame}[plain]
   \vfill
   {\LARGE\bfseries PointWorld: Scaling 3D World Models\\[2pt]
@@ -74,7 +66,6 @@
 
 
 
-% Abstract definition: orient the audience immediately after the title.
 \begin{frame}{What is PointWorld?}
   \vfill
   \centering
@@ -91,9 +82,7 @@
   \credit{Abstract; emphasis added}
 \end{frame}
 
-%% ---- Part A (Vivian): expanded introduction, method, and planning ----
-% Sources: PointWorld arXiv:2601.03782v1, Sections 1--3 and 5.2.
-% Beamer overlays reveal content on successive clicks. Original theme is unchanged.
+%% ---- Part A (Vivian, S1-3) ----
 \newcommand{\lossmark}[3]{\ifnum#1=#2\relax{\color{orange!90!red}\setlength{\fboxrule}{2pt}\setlength{\fboxsep}{2.5pt}\boxed{\color{ink}#3}}\else#3\fi}
 \newcommand{\pwequation}[1]{%
 \[
@@ -105,7 +94,6 @@
 +\lossmark{#1}{4}{s_{k,i}}
 \Big).
 \]}
-% Introduction 1/3
 \begin{frame}{Context: why do robots need world models?}
   \centering
   \paperfig{height=3.55cm}{figs/fig1_teaser.pdf}{Fig.~1}
@@ -260,7 +248,6 @@
   \end{tikzpicture}%
 }
 
-% Motivation for the representation, before introducing the core idea.
 \begin{frame}[t]{Motivation: why use 3D point flows?}
   \vspace{-0.2cm}
   \footnotesize
@@ -563,7 +550,6 @@
 \end{frame}
 
 
-% ----- Architecture and prediction in one slide -----
 \begin{frame}{Architecture: predicting 3D displacement}
   \begin{columns}[c]
 
@@ -599,8 +585,7 @@
 \end{frame}
 
 
-% ----- A distinct question: how far ahead? -----
-\begin{frame}[t]{Prediction horizon = 10 futures states at once}
+\begin{frame}[t]{Prediction horizon = 10 future states at once}
 \vspace{-0.25cm}
 \small
 
@@ -647,7 +632,6 @@
 \end{frame}
 
 
-% Four successive overlays keep the equation fixed and move the highlight.
 \begin{frame}{Training objective: Huber residual}
   \small
   \pwequation{1}
@@ -893,268 +877,277 @@
 \end{frame}
 
 
-%% ==== HANDOFF: Vivian presents S1-3 above, Juntang S4-6 below ====
+%% ==== HANDOFF ====
 
-%% ---- Part B: data and evidence, about 7:45 ----
+%% ---- Part B (Juntang, S4-6) ----
+% Layout: figure centred, bullets from the left margin, footer pinned to the bottom
+% (backup links left, source right). No credits under figures in this half.
 
-% 7. Data  1:15  (S4, Fig. 5)
-\begin{frame}{Data: re-annotating DROID in 3D}
+% Figure; #3 draws on it in coordinates normalized to the figure.
+\newcommand{\pwfig}[3]{%
+  \begin{tikzpicture}[baseline=(f.south)]
+    \node[anchor=south west, inner sep=0pt] (f) at (0,0) {\includegraphics[#1]{#2}};
+    \begin{scope}[x={(f.south east)}, y={(f.north west)}] #3 \end{scope}
+  \end{tikzpicture}}
+% Footer: #1 bottom-left (backup links), #2 bottom-right (source), on one baseline.
+\newcommand{\foot}[2]{\par\nointerlineskip\noindent\begin{tikzpicture}[remember picture, overlay]
+  \node[anchor=base west, inner sep=0pt, font=\tiny, text=mute]
+    at ([shift={(0.55cm,0.32cm)}]current page.south west) {#1};
+  \node[anchor=base east, inner sep=0pt, font=\tiny, text=mute]
+    at ([shift={(-1.15cm,0.32cm)}]current page.south east) {#2};\end{tikzpicture}}
+\newcommand{\pwsrc}[1]{\citet{huang2026pointworld}, #1}
+\newcommand{\bk}[2]{\hyperlink{#1}{\color{cite}#2}}
+% Extra detail in small gray type, aligned with the bullets.
+\newcommand{\aside}[1]{{\par\raggedright\tiny\color{mute}#1\par}}
+% Model name after a step, small and gray; citations live in the pipeline backup.
+\newcommand{\tool}[1]{ {\scriptsize\color{mute}(#1)}}
+% Box a table cell on one overlay without moving the table.
+\newcommand{\cellbox}[2]{\alt<#1>{\tikz[baseline=(n.base)]{\node[inner sep=0pt] (n) {#2};
+  \draw[overlay, orange!90!red, line width=1.6pt, rounded corners=1pt]
+    ([shift={(-3pt,-3pt)}]n.south west) rectangle ([shift={(3pt,3pt)}]n.north east);}}{#2}}
+
+% Data 1:15. S4, Fig. 5
+\begin{frame}[label=data]{Data: re-annotating DROID in 3D}
   \centering
-  \paperfig{height=4.0cm}{figs/fig5a_annotation.pdf}{Fig.~5, top}
+  \pwfig{height=4.3cm}{figs/fig5a_annotation.pdf}{%
+    \only<1>{\pwarchrect{0.668}{0.005}{0.997}{1.06}}%
+    \only<2>{\pwarchrect{0.335}{0.005}{0.664}{1.06}}}
   \vfill
-  \begin{notes}[0.86\linewidth]
-    \item DROID \src{khazatsky2024droid}: real teleoperation, but its depth and camera
-      poses are off. Three fixes: depth from FoundationStereo \src{wen2025foundationstereo}, poses
-      from VGGT \src{wang2025vggt} refined against the robot mesh, CoTracker3
-      \src{karaev2025cotracker3} tracks lifted to 3D
-    \item \pw{Over 60\% of DROID survives, about 200 hours}. With BEHAVIOR-1K simulation
-      \src{li2024behavior}, the total is about 2M trajectories, 500 hours
+  \begin{notes}[\linewidth]
+    \item<1-> \textbf{Original}: DROID's depth and camera poses are noisy.
+    \item<2-> \textbf{Ours}: depth\tool{FoundationStereo}, cameras\tool{VGGT + robot
+      mesh}, 3D tracks\tool{CoTracker3}.
+    \item<3-> \textbf{Scale}: \pw{about 2M trajectories, 500 hours}, real and simulated.
   \end{notes}
   \vfill
+  \foot{Backup: \bk{bk-pipeline}{pipeline} $\cdot$ \bk{bk-quality}{quality} $\cdot$
+      \bk{bk-b1k}{BEHAVIOR-1K}}
+    {\pwsrc{Fig.~5} $\cdot$ DROID \citep{khazatsky2024droid} $\cdot$ BEHAVIOR-1K
+      \citep{li2024behavior}}
 \end{frame}
 
-% 8. How it is scored  0:45  (S4 evaluation protocol, Fig. 6 top two rows)
-\begin{frame}{How it is scored}
+% Evaluation 0:45. S4, Fig. 6
+\begin{frame}[label=eval]{Evaluation: how predictions are scored}
   \centering
-  \paperfig{width=0.92\linewidth, trim=16 485 0 0, clip}{figs/fig6_rollouts.pdf}{Fig.~6, top two rows}
+  \pwfig{width=0.92\linewidth, trim=16 485 0 0, clip}{figs/fig6_rollouts.pdf}{%
+    \only<1>{\pwarchrect{0.396}{0.01}{0.997}{1.08}}}
   \vfill
-  \begin{notes}[0.92\linewidth]
-    \item \textbf{$\ell_2$ mover}: mean distance, in metres, between predicted and true
-      positions of the points that move, over the 1\,s horizon
-    \item On DROID, points count only where a separate model, trained on the test split, is
-      confident (\S4: the top 80\%)
-    \item \pw{0.001 is one millimetre. Read every difference that follows in mm}
+  \begin{notes}[\linewidth]
+    \item<1-> \textbf{$\ell_2$ mover}: average 3D error of the points that move.
+    \item<2-> \textbf{Filtering}: on real data, only points an expert model trusts count.
+    \item<3-> \textbf{Units}: \pw{metres, so 0.001 is 1\,mm.}
   \end{notes}
   \vfill
+  \foot{Backup: \bk{bk-eval}{evaluation details}}{\pwsrc{Fig.~6, \S4}}
 \end{frame}
 
-% 9. Roadmap  1:00  (Fig. 7, S5.1)
-\begin{frame}{Recipe: what each change bought}
+% Roadmap 1:00. Fig. 7, S5.1
+\begin{frame}[label=roadmap]{Roadmap: what each change bought}
   \begin{columns}[c]
     \column{0.40\textwidth}
       \centering
-      \paperfig{height=6.0cm}{figs/fig7_roadmap.pdf}{Fig.~7}
-    \column{0.58\textwidth}
-      \footnotesize
-      \begin{itemize}\setlength{\itemsep}{5pt}
-        \item Swapping the graph network (GBND) for PTv3 is the biggest single step:
-          0.0386 to 0.0348
-        \item The loss and DINO image features add 1.7\,mm; scaling PTv3 from 50M to 1B
-          parameters adds 1.9\,mm
-        \item \pw{0.0386 to 0.0312 overall: 7.4\,mm, or 19\% less error on moving points}
-      \end{itemize}
-      \vspace{4pt}
-      {\scriptsize\color{mute} Each bar adds one change to the bar above it. Hatched bars
-        were tried and not kept.\par}
-  \end{columns}
-\end{frame}
-
-% 10. Scaling  0:45  (Fig. 9, S5.2 scaling paragraph; Tab. 1 for memory and latency)
-\begin{frame}{Scaling}
-  \begin{columns}[c]
-    \column{0.42\textwidth}
-      \centering
-      \paperfig{height=4.7cm}{figs/fig9_scaling.pdf}{Fig.~9}
+      \pwfig{height=5.9cm}{figs/fig7_roadmap.pdf}{%
+        \only<1>{\pwarchrect{-0.03}{0.756}{1.06}{0.962}}%
+        \only<2>{\pwarchrect{-0.03}{0.290}{1.06}{0.758}}%
+        \only<3>{\pwarchrect{-0.03}{0.091}{1.06}{0.292}}%
+        \only<4>{\pwarchrect{0.20}{0.893}{1.06}{0.962}\pwarchrect{0.20}{0.091}{1.06}{0.152}}}
     \column{0.56\textwidth}
       \footnotesize
-      \begin{itemize}\setlength{\itemsep}{5pt}
-        \item Error falls roughly log-linearly with data, from 5\% to 100\% of DROID, and
-          with model size, from 50M to 1B parameters
-        \item PTv3 makes the model axis affordable: 957 times GBND's parameters for 4.3
-          times the memory, about 0.12\,s per pass at 1B (Tab.~1)
-        \item \pw{Predictable gains from more data and capacity, as in language and vision}
+      \begin{itemize}\setlength{\itemsep}{10pt}
+        \item<1-> \textbf{Backbone}: PTv3, the biggest gain, 3.8\,mm.
+        \item<2-> \textbf{Loss and DINO features}: 1.7\,mm.
+        \item<3-> \textbf{Model size}, 50M $\to$ 1B: 1.9\,mm.
+        \item<4-> \textbf{Total}: \pw{7.4\,mm, 19\% less error.}
       \end{itemize}
-      \vspace{4pt}
-      {\scriptsize\color{mute} One axis at a time, on DROID. All nine backbones in the
-        backup.\par}
   \end{columns}
+  \foot{Backup: \bk{bk-backbones}{all backbones}}{\pwsrc{Fig.~7, \S5.1}}
 \end{frame}
 
-% 11. Why gripper points  0:45  (Fig. 11, S5.2) -- first to cut if running long
-\begin{frame}{Why gripper points?}
+% Scaling 0:45. Fig. 9, S5.2, Tab. 1
+\begin{frame}[label=scaling]{Scaling: data and model size}
   \begin{columns}[c]
-    \column{0.44\textwidth}
+    \column{0.40\textwidth}
       \centering
-      \paperfig{height=4.4cm}{figs/fig11_action.pdf}{Fig.~11}
-    \column{0.54\textwidth}
+      \pwfig{height=4.6cm}{figs/fig9_scaling.pdf}{%
+        \only<1>{\fill[white, opacity=0.75] (0.597,0) rectangle (1,1);}%
+        \only<2-3>{\fill[white, opacity=0.75] (0.17,0) rectangle (0.594,1);}}
+    \column{0.56\textwidth}
       \footnotesize
-      \begin{itemize}\setlength{\itemsep}{5pt}
-        \item Robot as points on its grippers only, against points on the whole body (two
-          densities), end-effector pose, or joint positions
-        \item Lowest error on both real (DROID) and simulated (B1K) data. On real data,
-          whole-body points do worse than a plain pose; the authors' reading: too many robot
-          points drown the few moving scene points
-        \item \pw{Gripper points keep the contact geometry and stay the same format for
-          both robots}
+      \begin{itemize}\setlength{\itemsep}{10pt}
+        \item<1-> \textbf{Data}: error falls log-linearly with data.
+        \item<2-> \textbf{Model}: same trend, up to 1B parameters.
+        \item<3-> \textbf{Speed}: 0.12\,s per prediction at 1B.
+        \item<4-> \pw{Predictable gains from scale.}
       \end{itemize}
-      \vspace{4pt}
-      {\scriptsize\color{mute} All variants are trained on DROID and B1K together. The
-        paper does not say what the markers above the bars are.\par}
   \end{columns}
+  \foot{Backup: \bk{bk-backbones}{all backbones}}{\pwsrc{Fig.~9, Tab.~1, \S5.2}}
 \end{frame}
 
-% 12. Transfer to a new lab  1:00  (Tab. 2 held-out columns, S5.3; finetuning = 1/20
-%     of the iterations)
-\begin{frame}{Does it transfer to a new lab?}
-  \centering\small
+% Generalization 1:00. Tab. 2 held-out columns, S5.3
+\begin{frame}[label=transfer]{Generalization: transfer to a new lab}
+  \vfill
+  {\centering\small
   \setlength{\tabcolsep}{9pt}
   \begin{tabular}{@{}lcccc@{}}
     \toprule
-    pretrained on & DROID & BEHAVIOR-1K & \pw{both} & specialist (H only) \\
+    pretrained on & DROID & BEHAVIOR-1K & \pw{both} & \cellbox{1}{specialist (H only)} \\
     \midrule
-    zero-shot & 0.0305 & 0.0531 & \pw{0.0300} & 0.0293 \\
-    finetuned & \textbf{0.0271} & 0.0299 & \pw{\textbf{0.0272}} & 0.0293 \\
+    zero-shot & 0.0305 & 0.0531 & \cellbox{2}{\pw{0.0300}} & \cellbox{2}{0.0293} \\
+    finetuned & \textbf{0.0271} & 0.0299 & \cellbox{3}{\pw{\textbf{0.0272}}} & \cellbox{3}{0.0293} \\
     \bottomrule
-  \end{tabular}
-  \credit{Tab.~2, held-out columns, $\ell_2$ mover; in- and cross-domain columns in the
-    backup}
+  \end{tabular}\par
+  \vspace{3pt}{\tiny\color{mute} $\ell_2$ mover on the held-out lab H; lower is better.}\par}
   \vfill
-  \begin{notes}[0.9\linewidth]
-    \item H: one DROID lab held out of pretraining. The specialist trains on that lab alone
-    \item Zero-shot, real-plus-sim pretraining comes within 0.7\,mm of the specialist.
-      \pw{Finetuned with 1/20 of the training steps, it beats the specialist by 2.1\,mm}
-    \item Simulation alone does not transfer zero-shot, but finetuning brings it close to
-      the specialist
+  \begin{notes}[\linewidth]
+    \item<1-> \textbf{Setup}: lab H is held out; a specialist trains on H only.
+    \item<2-> \textbf{Zero-shot}: within 0.7\,mm of the specialist.
+    \item<3-> \textbf{Finetuned}: \pw{beats it by 2.1\,mm, with 20$\times$ fewer steps.}
   \end{notes}
   \vfill
+  \foot{Backup: \bk{bk-transfer}{all transfer results}}{\pwsrc{Tab.~2, \S5.3}}
 \end{frame}
 
-% 13. Real robot  1:15  (Fig. 8, S5.4, App. real-robot details)
-\begin{frame}{Results: real robot, zero-shot}
+% Real robot 1:15. Fig. 8, S5.4, App. A.6
+\begin{frame}[label=robot]{Real robot: zero-shot planning}
   \centering
-  \includegraphics[height=2.7cm]{figs/fig8b_tasks.pdf}\\[1pt]
-  \includegraphics[width=0.86\linewidth]{figs/fig8a_success.pdf}
-  \credit{Fig.~8}
-  \vspace{2pt}
-  \begin{notes}[0.9\linewidth]
-    \item 8 tasks $\times$ 10 trials, one camera, a gripper never seen in training, no demos
-      or finetuning: \pw{56\% overall (45 of 80)}
-    \item Each plan runs without replanning; the deformable and tool tasks start with the object
-      grasped. Videos: \href{https://point-world.github.io}{point-world.github.io}
+  \includegraphics[height=2.7cm]{figs/fig8b_tasks.pdf}\\[2pt]
+  \uncover<2->{\includegraphics[width=0.86\linewidth]{figs/fig8a_success.pdf}}
+  \vfill
+  \begin{notes}[\linewidth]
+    \item<1-> \textbf{Setup}: 8 tasks, 10 trials each, an unseen gripper, no demos.
+    \item<2-> \textbf{Result}: \pw{45 of 80 trials succeed (56\%).}
+      Videos: \href{https://point-world.github.io}{point-world.github.io}
   \end{notes}
+  \vfill
+  \foot{Backup: \bk{bk-protocol}{robot protocol} $\cdot$ \bk{bk-ablations}{horizon and
+      cameras}}{\pwsrc{Fig.~8, \S5.4, App.~A.6}}
 \end{frame}
 
-% 14. Limitations  0:30  (App. "Extended Discussions on Limitations")
-\begin{frame}{Limitations}
+% Limitations 0:30. App. A.1
+\begin{frame}[label=limits]{Limitations}
   \vfill
-  \begin{columns}
-    \column{0.86\textwidth}
-      {\small\bfseries Stated by the authors} {\scriptsize\color{mute}(Appendix)}
-      \vspace{4pt}
-      \begin{itemize}\setlength{\itemsep}{6pt}
-        \item One still frame in, so the scene must start at rest: no velocities
-        \item Task costs are drawn by hand: object masks and target points
-        \item The robot is assumed rigid and to follow its planned path exactly
-      \end{itemize}
-  \end{columns}
+  \small
+  \begin{itemize}\setlength{\itemsep}{16pt}
+    \item<1-> \textbf{Static input}: the scene must start at rest.
+    \item<2-> \textbf{Manual goals}: masks and targets are set by hand.
+    \item<3-> \textbf{Ideal robot}: rigid, and follows its plan exactly.
+  \end{itemize}
   \vfill
+  \foot{Backup: \bk{bk-reading}{our reading}}{\pwsrc{App.~A.1}}
 \end{frame}
 
-% 15. Takeaway  0:30
+% Takeaway 0:30
 \begin{frame}{Takeaway}
   \vfill
-  \begin{columns}
-    \column{0.88\textwidth}
-      \begin{itemize}\setlength{\itemsep}{10pt}
-        \item \pw{One 3D world model for more than one robot: scene and action as moving
-          points, trained on 2M real and simulated trajectories}
-        \item Each piece of the recipe lowers the error, and more data and parameters keep
-          helping at a predictable rate
-        \item From a single image it plans real pushing, cloth, hinge and tool tasks
-          zero-shot; code, data and checkpoints are public
-      \end{itemize}
-  \end{columns}
+  \small
+  \begin{itemize}\setlength{\itemsep}{16pt}
+    \item<1-> One \pw{3D world model}: scene and robot as moving points.
+    \item<2-> \pw{Scale keeps helping}: more data, bigger models.
+    \item<3-> \pw{Zero-shot planning} on a real robot, from one image.
+  \end{itemize}
   \vfill
 \end{frame}
 
-% 16. Discussion  -- the 15 minutes end here; call on the roles in the agreed order.
-%     Each question hands a thread to a role (reviewer, red team, researcher).
-\begin{frame}{Discussion}
-  \begin{itemize}\setlength{\itemsep}{6pt}
-    \item The robot results report no baseline and never replan. What comparison would
-      show that 56\% is good?
-    \item On real data a plain end-effector pose comes close to gripper points. Is the
-      point action essential, or mainly a way to mix robots?
-    \item The model sees one frozen frame, and moving points are still off by about
-      3\,cm. Which tasks does that rule out?
+% Discussion: the 15 minutes end here; hand over to the roles in the agreed order.
+\begin{frame}[label=discussion]{Discussion}
+  \vfill
+  \small
+  \begin{itemize}\setlength{\itemsep}{16pt}
+    \item<1-> \textbf{Planning}: no baseline, no replanning. Is 56\% good?
+    \item<2-> \textbf{Action}: on real data, a plain gripper pose comes close. Why points?
+    \item<3-> \textbf{Scope}: one still frame, about 3\,cm error. What is out of reach?
   \end{itemize}
+  \vfill
+  \foot{Backup: \bk{bk-action}{why gripper points} $\cdot$ \bk{bk-reading}{our reading}}{}
 \end{frame}
 
-%% ---- backup ----
+%% ---- backup: same order as the main slides; each links back ----
 \appendix
 
-% Our critique, kept out of the main talk (presenter = first author). Sources: S4, S5.2,
-% S5.3, S5.4, App. DROID evaluation protocol, App. real-robot details.
-\begin{frame}{Backup: our reading}
-  \footnotesize
-  \begin{itemize}\setlength{\itemsep}{5pt}
-    \item \textbf{Robot}: 8 tasks $\times$ 10 trials, no baseline success rate, no
-      replanning, deformable and tool tasks start pre-grasped. 56\% cannot yet be ranked
-      against a policy or another model
-    \item \textbf{Metric}: real-data gaps are a few mm, scored on points an expert model
-      trusts. \S4 says it keeps the top 80\%; the appendix thresholds ``at the 0.8
-      quantile'' and drops the points below, which reads as the top 20\%
-    \item \textbf{Transfer}: zero-shot on a held-out lab is 0.7\,mm behind the specialist;
-      the clear wins need finetuning
-    \item \textbf{Small inconsistencies}: GBND is 0.0390 in Tab.~1 and 0.0386 in Fig.~7.
-      Fig.~11's legend gives whole-body variants of 500 and 3000 points; \S5.2 gives ``the
-      same number of points'' and 2000
-  \end{itemize}
-\end{frame}
-
-% Eq. 1 and the movement weight, S3.1
-\begin{frame}{Backup: training objective}
-  \small
-  \[
-    \tfrac12 \sum_{k,i}^{H, N_S}
-    \underbrace{w_{k,i}}_{\text{movement}}
-    \Big( \underbrace{\rho_\delta\big(\hat P_{t+k,i} - P_{t+k,i}\big)}_{\text{Huber on 3D residual}}
-    \underbrace{e^{-s_{k,i}}}_{\text{uncertainty weight}}
-    + \underbrace{s_{k,i}}_{\text{regularizer}} \Big)
-    \tag{1}
-  \]
-  \[
-    m_{k,i} = \sigma\big(\kappa(\delta_{k,i} - \tau)\big), \qquad
-    w_{k,i} = m_{k,i} \Big/ \textstyle\sum_{k,i} m_{k,i}
-  \]
-  \credit{\S3.1}
+% App. A.2 (A.2.2 cameras, A.2.4 tracks); S4
+\begin{frame}[label=bk-pipeline]{Backup: DROID annotation pipeline}
+  \centering
+  \begin{tikzpicture}[
+    every node/.style={font=\footnotesize, align=center},
+    stage/.style={draw=pw, thick, text width=3.5cm, minimum height=1.0cm, inner sep=4pt}]
+    \node[stage] (d) at (0,0) {\textbf{Depth}\\FoundationStereo \src{wen2025foundationstereo}};
+    \node[stage] (c) at (4.6,0) {\textbf{Cameras}\\VGGT \src{wang2025vggt}, then robot-mesh refit};
+    \node[stage] (t) at (9.2,0) {\textbf{Tracks}\\CoTracker3 \src{karaev2025cotracker3}, lifted to 3D};
+    \draw[->, thick, pw] (d) -- (c);
+    \draw[->, thick, pw] (c) -- (t);
+  \end{tikzpicture}
   \vfill
-  \begin{notes}
-    \item $\delta_{k,i}$: length of point $i$'s true displacement at step $k$; $\tau$ a
-      threshold, $\kappa$ a temperature
-    \item Points the 2D tracker marks as occluded get no loss at all
-    \item Aleatoric uncertainty, the same device VGGT uses \src{wang2025vggt}: the model may
-      say ``unsure'', at the price of the $s$ term
+  \begin{notes}[\linewidth]
+    \item \textbf{Initialize}: VGGT poses the cameras; the wrist camera ties them to the robot.
+    \item \textbf{Render}: the robot mesh at the recorded joint angles, seen from each camera.
+    \item \textbf{Match}: refit all cameras jointly to minimize robot depth error,
+      $\frac1K\sum |d^{\text{obs}} - d^{\text{pred}}|$.
+    \item \textbf{Result}: \pw{reliable camera poses for about 60\% of DROID episodes.}
   \end{notes}
+  \vspace{8pt}
+  \aside{VGGT alone can be off by tens of cm. Tracks run on non-robot workspace pixels;
+    occluded points get no loss.}
+  \vfill
+  \foot{$\leftarrow$ Back to \bk{data<3>}{Data}}{\pwsrc{App.~A.2}}
 \end{frame}
 
-% App. real-robot details
-\begin{frame}{Backup: planning and robot protocol}
+% Fig. 5 bottom, App. A.2.3
+\begin{frame}[label=bk-quality]{Backup: annotation quality}
+  \centering
+  \pwfig{width=0.92\linewidth}{figs/fig5b_cdf.pdf}{}
+  \vfill
+  \begin{notes}[\linewidth]
+    \item \textbf{Left}: depth error on the robot's own surface.
+    \item \textbf{Middle, right}: two cameras' point clouds agree within 5 and 20\,mm.
+    \item \textbf{Result}: \pw{higher curves are better; ours is on top almost everywhere.}
+    \item \textbf{Cameras}: a median 1.8\,cm and 1.9$^\circ$ from a proxy truth.
+  \end{notes}
+  \vspace{8pt}
+  \aside{Proxy truth: the best 1\% of scenes under DROID's own calibration.}
+  \vfill
+  \foot{$\leftarrow$ Back to \bk{data<3>}{Data}}{\pwsrc{Fig.~5, \S4, App.~A.2.3}}
+\end{frame}
+
+% S4 "Simulation"; App. A.3; Fig. 19; Tab. 2
+\begin{frame}[label=bk-b1k]{Backup: BEHAVIOR-1K simulation data}
+  \centering
+  \pwfig{width=0.52\linewidth, trim=0 474 0 0, clip}{figs/fig19_b1k_rollouts.pdf}{}
+  \vfill
+  \begin{notes}[\linewidth]
+    \item \textbf{Source}: BEHAVIOR-1K \src{li2024behavior}, 10k episodes, 50 household tasks.
+    \item \textbf{Robot}: Galaxea R1 Pro, two arms on a mobile base.
+    \item \textbf{Labels}: exact flows, read from the simulator state.
+    \item \textbf{Role}: \pw{alone, weak on real data (0.0531); with DROID, the best mix (0.0300).}
+  \end{notes}
+  \vspace{8pt}
+  \aside{1,100\,h of teleoperation before filtering, replayed in Isaac Sim with three
+    robot-mounted cameras. Role: zero-shot $\ell_2$ mover, held-out lab.}
+  \vfill
+  \foot{$\leftarrow$ Back to \bk{data<3>}{Data}}{\pwsrc{Fig.~19, App.~A.3, Tab.~2}}
+\end{frame}
+
+% S4 evaluation protocol; App. A.5
+\begin{frame}[label=bk-eval]{Backup: evaluation details}
+  \vfill
   \footnotesize
-  \begin{columns}[t]
-    \column{0.48\textwidth}
-      {\small\bfseries Planner}
-      \begin{itemize}\setlength{\itemsep}{2pt}
-        \item MPPI around a zero nominal, cubic-spline noise (4 knots), $\sigma$ from 0.05
-          to 0.50
-        \item 256 samples, temperature $\beta = 0.05$, EMA 0.9, 20 iterations
-        \item 30 steps ahead, in 3 chunked passes; no replanning in this work
-      \end{itemize}
-    \column{0.48\textwidth}
-      {\small\bfseries Robot}
-      \begin{itemize}\setlength{\itemsep}{2pt}
-        \item 7-DoF Franka on a wheeled base, 3D-printed fin-ray gripper (training saw
-          Robotiq and Galaxea R1 Pro grippers)
-        \item One RealSense D435; depth from its stereo IR pair via FoundationStereo
-        \item Masks from SAM~2 \src{ravi2024sam2}, targets placed in a GUI; failures include
-          plans judged unsafe to run
-      \end{itemize}
-  \end{columns}
-  \vspace{4pt}\credit{Appendix, real-robot experiment details}
+  \begin{itemize}\setlength{\itemsep}{14pt}
+    \item \textbf{Metric}: $\ell_2$ per point and per step over 1\,s, averaged per sequence.
+    \item \textbf{Movers}: set by the true motion; static points are scored on their own.
+    \item \textbf{Expert filter}: trained only on the test split; keeps the 80\% it trusts
+      most (\S4).
+    \item \textbf{Same for all}: \pw{every model is scored on the same filtered test set.}
+  \end{itemize}
+  \vspace{10pt}
+  \aside{BEHAVIOR-1K labels are noiseless and not filtered. The authors: this dense metric
+    exposes differences that task success rates miss.}
+  \vfill
+  \foot{$\leftarrow$ Back to \bk{eval<3>}{Evaluation}}{\pwsrc{\S4, App.~A.5}}
 \end{frame}
 
-\begin{frame}{Backup: all backbones}
-  \centering\small
+% Tab. 1
+\begin{frame}[label=bk-backbones]{Backup: all backbones}
+  \vfill
+  {\centering\small
   \setlength{\tabcolsep}{5pt}
   \begin{tabular}{@{}lrrrrrr@{}}
     \toprule
@@ -1171,17 +1164,22 @@
     \pw{PTv3-1B} & 957.71$\times$ & 4.30$\times$ & 3.57$\times$ & 123.65 & \textbf{0.0312}
       & \textbf{0.0056} \\
     \bottomrule
-  \end{tabular}
-  \credit{Tab.~1, relative to GBND}
-  \vspace{4pt}
-  \begin{notes}[0.86\linewidth]
-    \item GBND keeps a feature for every point and passes messages only locally, so memory
-      grows fast and far-away effects get lost
+  \end{tabular}\par
+  \vspace{3pt}{\tiny\color{mute} Params, memory and FLOPs relative to GBND.}\par}
+  \vfill
+  \begin{notes}[\linewidth]
+    \item \textbf{GBND}: a feature per point and local messages; memory grows fast, far
+      effects get lost.
   \end{notes}
+  \vfill
+  \foot{$\leftarrow$ Back to \bk{roadmap<4>}{Roadmap} $\cdot$ \bk{scaling<4>}{Scaling}}
+    {\pwsrc{Tab.~1}}
 \end{frame}
 
-\begin{frame}{Backup: generalization, all columns}
-  \centering\scriptsize
+% Tab. 2, Fig. 10, S5.3
+\begin{frame}[label=bk-transfer]{Backup: all transfer results}
+  \centering
+  {\scriptsize
   \setlength{\tabcolsep}{5pt}
   \begin{tabular}{@{}ll*{7}{c}c@{}}
     \toprule
@@ -1193,56 +1191,110 @@
     finetuned & mover & -- & -- & 0.0107 & 0.0378 & 0.0271 & 0.0299 & 0.0272 & 0.0293 \\
       & static & -- & -- & 0.0003 & 0.0086 & 0.0040 & 0.0046 & 0.0040 & 0.0043 \\
     \bottomrule
-  \end{tabular}
-  \credit{Tab.~2: D = DROID, B = BEHAVIOR-1K, H = held-out lab}
-  \vspace{6pt}
-  \paperfig{height=2.4cm}{figs/fig10_heldout.pdf}{Fig.~10}\par\vspace{6pt}
-  {\tiny\color{mute} H is the CLVR lab within DROID, split 90/10; finetuned models see only
-    the 90\%. Zero-shot across sim and real fails both ways (0.1460, 0.0558).\par}
+  \end{tabular}\par}
+  \vspace{3pt}{\tiny\color{mute} D = DROID, B = BEHAVIOR-1K, H = held-out lab; pretrained
+    $\to$ tested.}\par
+  \vfill
+  \pwfig{height=3.0cm}{figs/fig10_heldout.pdf}{}
+  \vfill
+  \aside{H is the CLVR lab within DROID, split 90/10; finetuned models see only the 90\%.
+    Zero-shot between sim and real fails both ways (0.1460, 0.0558).}
+  \vfill
+  \foot{$\leftarrow$ Back to \bk{transfer<3>}{Generalization}}{\pwsrc{Tab.~2, Fig.~10}}
 \end{frame}
 
-% Fig. 12, S5.2
-\begin{frame}{Backup: predict 1\,s at once}
-  \begin{columns}[c]
-    \column{0.52\textwidth}
-      \centering
-      \paperfig{width=\linewidth}{figs/fig12_chunk.pdf}{Fig.~12}
-    \column{0.46\textwidth}
-      \footnotesize
-      \begin{itemize}\setlength{\itemsep}{5pt}
-        \item Predicting all 10 steps together drifts least, in one pass instead of 2 to 10
-        \item The same model fed its own outputs one step at a time drifts most
-        \item The planner chains three such chunks to look 3\,s ahead
+% App. A.6
+\begin{frame}[label=bk-protocol]{Backup: robot protocol}
+  \vfill
+  \small
+  \begin{columns}[t, onlytextwidth]
+    \column{0.48\textwidth}
+      {\bfseries\color{pw} Planner}
+      \begin{itemize}\setlength{\itemsep}{10pt}
+        \item MPPI: 256 samples, 20 iterations.
+        \item Spline noise, $\sigma$ from 0.05 to 0.50.
+        \item 30 steps (3\,s) in 3 chunks, open loop.
+      \end{itemize}
+    \column{0.48\textwidth}
+      {\bfseries\color{pw} Robot}
+      \begin{itemize}\setlength{\itemsep}{10pt}
+        \item Franka, unseen fin-ray gripper.
+        \item One RealSense D435 camera.
+        \item SAM~2 masks, GUI targets.
       \end{itemize}
   \end{columns}
-\end{frame}
-
-% Fig. 13, S5.2
-\begin{frame}{Backup: cameras}
-  \centering
-  \paperfig{height=4.6cm}{figs/fig13_cameras.pdf}{Fig.~13}
+  \vspace{14pt}
+  \aside{MPPI temperature 0.05, EMA 0.9, cubic splines with 4 knots. Depth from the camera's
+    IR stereo pair via FoundationStereo; masks from SAM~2 \citep{ravi2024sam2}. Training saw
+    Robotiq and Galaxea R1 Pro grippers. Failures include plans judged unsafe to run.}
   \vfill
-  \begin{notes}[0.8\linewidth]
-    \item More cameras in training help at every test setting
-    \item Training on a random draw of up to three cameras is the most robust
-  \end{notes}
+  \foot{$\leftarrow$ Back to \bk{robot<2>}{Real robot}}{\pwsrc{App.~A.6}}
 \end{frame}
 
-\begin{frame}{Backup: annotation quality}
-  \centering
-  \paperfig{width=0.95\linewidth}{figs/fig5b_cdf.pdf}{Fig.~5, bottom}
+% Fig. 12 and Fig. 13, S5.2
+\begin{frame}[label=bk-ablations]{Backup: horizon and cameras}
+  \begin{columns}[t, onlytextwidth]
+    \column{0.48\textwidth}
+      {\small\bfseries\color{pw} Predict 1\,s at once}\par\vspace{6pt}
+      {\centering\pwfig{height=3.3cm}{figs/fig12_chunk.pdf}{}\par}\vspace{8pt}
+      \footnotesize
+      \begin{itemize}\setlength{\itemsep}{4pt}
+        \item \textbf{Chunked}: \pw{least drift}, in one pass.
+        \item \textbf{Step by step}: drifts the most.
+      \end{itemize}
+    \column{0.48\textwidth}
+      {\small\bfseries\color{pw} Number of cameras}\par\vspace{6pt}
+      {\centering\pwfig{height=3.3cm}{figs/fig13_cameras.pdf}{}\par}\vspace{8pt}
+      \footnotesize
+      \begin{itemize}\setlength{\itemsep}{4pt}
+        \item \textbf{More cameras} in training always help.
+        \item \textbf{Random 1--3}: \pw{the most robust}.
+      \end{itemize}
+  \end{columns}
+  \foot{$\leftarrow$ Back to \bk{robot<2>}{Real robot}}{\pwsrc{Figs.~12--13, \S5.2}}
+\end{frame}
+
+% Fig. 11, S5.2
+\begin{frame}[label=bk-action]{Backup: why gripper points?}
+  \begin{columns}[c, onlytextwidth]
+    \column{0.40\textwidth}
+      \centering
+      \pwfig{height=4.15cm}{figs/fig11_action.pdf}{}
+    \column{0.56\textwidth}
+      \footnotesize
+      \begin{itemize}\setlength{\itemsep}{10pt}
+        \item \textbf{Compared}: gripper, whole body, pose, joints.
+        \item \textbf{Result}: \pw{gripper points are best.}
+        \item \textbf{Whole body}: loses to a pose on real data.
+      \end{itemize}
+      \vspace{8pt}
+      \aside{Best on both real and simulated data; all trained on DROID and BEHAVIOR-1K. The
+        authors' plausible explanation: many robot points obscure the sparse signal in noisy
+        real data.}
+  \end{columns}
+  \foot{$\leftarrow$ Back to \bk{discussion<3>}{Discussion}}{\pwsrc{Fig.~11, \S5.2}}
+\end{frame}
+
+% Our critique for the reviewer and red-team roles. S4, S5, App. A.5-A.6
+\begin{frame}[label=bk-reading]{Backup: our reading}
   \vfill
-  \begin{notes}
-    \item Left: depth reprojection error on the robot's own surface. Right: point cloud
-      agreement between two cameras within 5 and 20\,mm
-    \item Off-the-shelf models alone (FoundationStereo, VGGT) are not enough; the robot-mesh
-      refinement is what lifts the curves
-    \item Extrinsics land a median 1.8\,cm and 1.9$^\circ$ from a proxy truth: the best 1\% of
-      scenes under DROID's own calibration
-  \end{notes}
+  \footnotesize
+  \begin{itemize}\setlength{\itemsep}{9pt}
+    \item \textbf{Robot}: 80 trials, no baseline, no replanning.
+    \item \textbf{Setup}: deformable and tool tasks start with the object in hand.
+    \item \textbf{Metric}: mm-level gaps, scored only where an expert model trusts the labels.
+    \item \textbf{Filter}: \S4 keeps the top 80\%; the appendix's 0.8 quantile reads as top 20\%.
+    \item \textbf{Transfer}: zero-shot is 0.7\,mm behind the specialist; clear wins need
+      finetuning.
+  \end{itemize}
+  \vspace{10pt}
+  \aside{Also: Fig.~11's legend says 3000 whole-body points where \S5.2 says 2000.}
+  \vfill
+  \foot{$\leftarrow$ Back to \bk{limits<3>}{Limitations} $\cdot$
+    \bk{discussion<3>}{Discussion}}{\pwsrc{\S4, \S5, App.~A.5--A.6}}
 \end{frame}
 
-% No allowframebreaks: with it, multicols emits a blank page and clips the last entry.
+% No allowframebreaks: multicols would add a blank page.
 \begin{frame}[t]{References}
   \vspace{-1.2em}
   \nocite{huang2026pointworld}

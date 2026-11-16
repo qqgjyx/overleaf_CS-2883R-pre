@@ -1,7 +1,8 @@
 % PointWorld presenter deck. CS 2883R, 18 Nov 2026. Juntang Wang, Vivian Hui.
 % Numbers from arXiv 2601.03782v1; frame comments name the source. l2 is in metres.
 % Presenter speaks as first author; critique lives in Discussion and "Backup: our reading".
-% 15:00: Vivian S1-3 (~8:00), Juntang S4-6 (~7:00). If long, trim Data and Real robot.
+% 15:00: Vivian S1-3 (~8:00), Juntang S4-6 (~7:45). If long, cut "Why gripper points"
+% first, then trim Data and Real robot.
 % LAPA deck: tag lapa-final. Build: latexmk -pdf main.tex
 \documentclass[aspectratio=169,12pt]{beamer}
 \usetheme[progressbar=none, numbering=counter]{moloch}
@@ -1088,6 +1089,26 @@
   \foot{Backup: \bk{bk-backbones}{all backbones}}{\pwsrc{Fig.~9, Tab.~1, \S5.2}}
 \end{frame}
 
+% Action representation 0:45. Fig. 11, S5.2. First to cut if long.
+\begin{frame}[label=action]{Why gripper points?}
+  \begin{columns}[c]
+    \column{0.40\textwidth}
+      \centering
+      \pwfig{height=4.1cm}{figs/fig11_action.pdf}{%
+        \only<2>{\pwarchrect{0.145}{0.15}{0.225}{0.45}\pwarchrect{0.630}{0.15}{0.706}{0.31}}%
+        \only<3>{\pwarchrect{0.214}{0.15}{0.421}{0.86}}}
+    \column{0.58\textwidth}
+      \footnotesize
+      \begin{itemize}\setlength{\itemsep}{10pt}
+        \item<1-> \textbf{Tested}: gripper, whole body, pose, joints.
+        \item<2-> \textbf{Best}: gripper points, real and simulated.
+        \item<3-> \textbf{Whole body}: worse than a pose on real data.
+        \item<4-> \pw{Contact geometry, one format across robots.}
+      \end{itemize}
+  \end{columns}
+  \foot{}{\pwsrc{Fig.~11, \S5.2}}
+\end{frame}
+
 % Generalization 1:00. Tab. 2 held-out columns, S5.3
 \begin{frame}[label=transfer]{Generalization: transfer to a new lab}
   \vfill
@@ -1163,7 +1184,7 @@
     \item<3-> \textbf{Scope}: one still frame, about 3\,cm error. What is out of reach?
   \end{itemize}
   \vfill
-  \foot{Backup: \bk{bk-action}{why gripper points} $\cdot$ \bk{bk-reading}{our reading}}{}
+  \foot{Jump to: \bk{action<4>}{why gripper points} $\cdot$ \bk{bk-reading}{our reading}}{}
 \end{frame}
 
 %% ---- backup: same order as the main slides; each links back ----
@@ -1357,27 +1378,6 @@
       \end{itemize}
   \end{columns}
   \foot{$\leftarrow$ Back to \bk{robot<2>}{Real robot}}{\pwsrc{Figs.~12--13, \S5.2}}
-\end{frame}
-
-% Fig. 11, S5.2
-\begin{frame}[label=bk-action]{Backup: why gripper points?}
-  \begin{columns}[c, onlytextwidth]
-    \column{0.40\textwidth}
-      \centering
-      \pwfig{height=4.15cm}{figs/fig11_action.pdf}{}
-    \column{0.56\textwidth}
-      \footnotesize
-      \begin{itemize}\setlength{\itemsep}{10pt}
-        \item \textbf{Compared}: gripper, whole body, pose, joints.
-        \item \textbf{Result}: \pw{gripper points are best.}
-        \item \textbf{Whole body}: loses to a pose on real data.
-      \end{itemize}
-      \vspace{8pt}
-      \aside{Best on both real and simulated data; all trained on DROID and BEHAVIOR-1K. The
-        authors' plausible explanation: many robot points obscure the sparse signal in noisy
-        real data.}
-  \end{columns}
-  \foot{$\leftarrow$ Back to \bk{discussion<3>}{Discussion}}{\pwsrc{Fig.~11, \S5.2}}
 \end{frame}
 
 % Our critique for the reviewer and red-team roles. S4, S5, App. A.5-A.6

@@ -66,21 +66,7 @@
 
 
 
-\begin{frame}{What is PointWorld?}
-  \vfill
-  \centering
-  \begin{minipage}{0.92\textwidth}
-    \large\raggedright
-    ``POINTWORLD, a \textbf{large pre-trained 3D world model} that
-    unifies \textbf{state and action} in a \textbf{shared 3D space}
-    as \textbf{3D point flows}: given one or few RGB-D images and
-    a sequence of low-level robot action commands, POINTWORLD
-    forecasts \textbf{per-pixel displacements in 3D} that respond
-    to the given actions.''
-  \end{minipage}
-  \vfill
-  \credit{Abstract; emphasis added}
-\end{frame}
+
 
 %% ---- Part A (Vivian, S1-3) ----
 \newcommand{\lossmark}[3]{\ifnum#1=#2\relax{\color{orange!90!red}\setlength{\fboxrule}{2pt}\setlength{\fboxsep}{2.5pt}\boxed{\color{ink}#3}}\else#3\fi}
@@ -99,9 +85,8 @@
   \paperfig{height=3.55cm}{figs/fig1_teaser.pdf}{Fig.~1}
   \vfill
   \begin{notes}[0.92\linewidth]
-    \item<1-> A robot must anticipate how an action changes its surroundings before committing to it.
-    \item<2-> A \textbf{world model} predicts future scene states from the current observation and a proposed action.
-    \item<3-> \pw{Use these predictions to compare actions and plan physical interactions in unseen environments.}
+    \item<2-> \textbf{World model} predicts future scene states given current observation and a proposed action.
+    \item<3-> \pw{Use these predictions to help plan actions in unseen environments.}
   \end{notes}
   \vfill
 \end{frame}
@@ -151,10 +136,8 @@
       \setlength{\itemsep}{3pt}
       \setlength{\parskip}{0pt}
       \setlength{\topsep}{2pt}
-      \item Simulate physical interactions using equations,
-        scene geometry, and specified physical properties.
-      \item Require scene-specific setup, and simulated
-        behavior can differ from reality.
+      \item Explicitly follow \textbf{physical laws and equations} (gravity, friction, collisions, etc) to simulate how objects move and interact in an environment.
+      \item Require scene-specific setup, and simulated behavior can differ from reality
     \end{itemize}
   }
 }
@@ -183,9 +166,9 @@
       \setlength{\itemsep}{3pt}
       \setlength{\parskip}{0pt}
       \setlength{\topsep}{2pt}
-      \item Learn from video data to generate videos
+      \item Learn from video data to \textbf{generate videos}
         conditioned on inputs such as text or images.
-      \item Realistic appearance does not guarantee accurate
+      \item \textbf{Realistic appearance} does not guarantee accurate
         physics or precise robot-action control.
     \end{itemize}
   }
@@ -215,9 +198,9 @@
       \setlength{\itemsep}{3pt}
       \setlength{\parskip}{0pt}
       \setlength{\topsep}{2pt}
-      \item Learn from interaction data to predict how
+      \item \textbf{Learn from interaction data} to predict how
         the environment changes in response to actions.
-      \item \textbf{Example: Dreamer} encodes a game screen
+      \item Example: \textbf{Dreamer} encodes a game screen
         into a latent state, then predicts how it changes
         after an action such as ``move right.''
     \end{itemize}
@@ -247,6 +230,38 @@
     \end{scope}
   \end{tikzpicture}%
 }
+\begin{frame}{What is PointWorld?}
+  \begin{columns}[c,onlytextwidth]
+    \column{0.46\textwidth}
+      \small\raggedright
+      \textquotedblleft{}POINTWORLD, a \textbf{large pre-trained 3D world model} that
+      unifies \textbf{state and action} in a \textbf{shared 3D space}
+      as \textbf{3D point flows}: given one or few RGB-D images and
+      a sequence of low-level robot action commands, POINTWORLD
+      forecasts \textbf{per-pixel displacements in 3D} that respond
+      to the given actions.\textquotedblright{}
+    \column{0.50\textwidth}
+      \centering
+      \resizebox{!}{6.2cm}{%
+        \begin{tikzpicture}
+          \node[anchor=south west,inner sep=0pt] (introfig) at (0,0)
+            {\phantom{\includegraphics[width=14cm]{figs/fig2_overview.pdf}}};
+          \begin{scope}[x={(introfig.south east)},y={(introfig.north west)}]
+            \clip (0.427,0.014) rectangle (0.998,0.978);
+            \node[anchor=south west,inner sep=0pt] at (0,0)
+              {\includegraphics[width=14cm]{figs/fig2_overview.pdf}};
+          \end{scope}
+          \pgfresetboundingbox
+          \begin{scope}[x={(introfig.south east)},y={(introfig.north west)}]
+            \path[use as bounding box] (0.427,0.014) rectangle (0.998,0.978);
+          \end{scope}
+        \end{tikzpicture}%
+      }\par
+      \vspace{5pt}
+  \end{columns}
+  \vfill
+  \credit{Abstract; Fig.~2, cropped}
+\end{frame}
 
 \begin{frame}[t]{Motivation: why use 3D point flows?}
   \vspace{-0.2cm}
@@ -271,10 +286,34 @@
   \credit{\S1--3.1}
 \end{frame}
 
-\begin{frame}[t]{PointWorld: state and action share 3D space}
-\vspace{-0.35cm}
-\centering
 
+
+\begin{frame}{Contributions}
+  \vfill
+  \begin{itemize}\setlength{\itemsep}{16pt}
+    \item<1-> A large pretrained \pw{3D world model} with a shared point-flow representation of scene state and robot action.
+    \item<2-> A curated, open-source 3D interaction dataset: approximately \pw{2M trajectories and 500 hours} of real and simulated interaction.
+    \item<3-> A \pw{single pretrained checkpoint} supports diverse real-robot manipulation tasks from one RGB-D capture, without extra demonstrations or post-training.
+  \end{itemize}
+  \vfill
+  \credit{\S1, contributions}
+\end{frame}
+
+
+
+
+% Shared architecture diagram and reusable orange highlights.
+\newcommand{\pwarchrect}[4]{%
+  \draw[orange!90!red,line width=2.8pt,rounded corners=2pt,
+    preaction={draw=white,line width=5pt}]
+    (#1,#2) rectangle (#3,#4);}
+\newcommand{\pwdiagramhighlight}[1]{%
+  \draw[overlay,orange!90!red,line width=2.8pt,rounded corners=2pt,
+    preaction={draw=white,line width=5pt}]
+    ([shift={(-3pt,-3pt)}]#1.south west)
+    rectangle ([shift={(3pt,3pt)}]#1.north east);}
+\newcommand{\pwarchitecturefocus}[2]{%
+  \resizebox{!}{#1}{%
 \begin{tikzpicture}[
   panel/.style={
     draw=pw,
@@ -306,7 +345,7 @@
 };
 
 % Input 1: observed scene state.
-\uncover<1->{
+
   \node[panel] (scene) at (0,1.45) {
     \begin{minipage}[c][2.2cm][c]{3.6cm}
       \centering
@@ -324,10 +363,9 @@
 
   \draw[->,thick,pw]
     (scene.east) -- (pwmodel.north west);
-}
 
 % Input 2: proposed robot action.
-\uncover<2->{
+
   \node[panel] (action) at (0,-1.45) {
     \begin{minipage}[c][2.2cm][c]{3.6cm}
       \centering
@@ -345,10 +383,9 @@
 
   \draw[->,thick,pw]
     (action.east) -- (pwmodel.south west);
-}
 
 % Output: predicted scene motion.
-\uncover<3->{
+
   \node[panel] (outcome) at (8.4,0) {
     \begin{minipage}[c][3.6cm][c]{3.8cm}
       \centering
@@ -366,86 +403,34 @@
 
   \draw[->,thick,pw]
     (pwmodel.east) -- (outcome.west);
-}
 
+
+% Orange highlights use the same diagram on every architecture frame.
+\ifcase#2\relax
+\or \pwdiagramhighlight{scene}
+\or \pwdiagramhighlight{action}
+\or \pwdiagramhighlight{pwmodel}
+\or \pwdiagramhighlight{scene}\pwdiagramhighlight{action}
+\or \pwdiagramhighlight{outcome}
+\or \pwdiagramhighlight{scene}
+\or \pwdiagramhighlight{action}
+\or \pwdiagramhighlight{action}
+\fi
 \end{tikzpicture}
-
-\credit{Fig.~2, cropped; \S3.1}
-\end{frame}
-
-\begin{frame}{Contributions}
-  \vfill
-  \begin{itemize}\setlength{\itemsep}{16pt}
-    \item<1-> A large pretrained \pw{3D world model} with a shared point-flow representation of scene state and robot action.
-    \item<2-> A curated, open-source 3D interaction dataset: approximately \pw{2M trajectories and 500 hours} of real and simulated interaction.
-    \item<3-> A \pw{single pretrained checkpoint} supports diverse real-robot manipulation tasks from one RGB-D capture, without extra demonstrations or post-training.
-  \end{itemize}
-  \vfill
-  \credit{\S1, contributions}
-\end{frame}
-
-
-
-
-% Architecture walkthrough: coordinates normalized to Figure 2.
-\newcommand{\pwarchrect}[4]{%
-  \draw[orange!90!red,line width=2.8pt,rounded corners=2pt,
-    preaction={draw=white,line width=5pt}]
-    (#1,#2) rectangle (#3,#4);}
-\newcommand{\pwarchitecturefocus}[2]{%
-  \begin{tikzpicture}
-    \node[anchor=south west,inner sep=0pt] (arch) at (0,0)
-      {\includegraphics[height=#1]{figs/fig2_overview.pdf}};
-    \begin{scope}[x={(arch.south east)},y={(arch.north west)}]
-      \ifcase#2\relax
-      \or % 1: RGB-D observation.
-        \pwarchrect{0.004}{0.505}{0.414}{0.846}
-      \or % 2: Full robot-action input.
-        \pwarchrect{0.002}{0.851}{0.421}{0.997}
-        \pwarchrect{0.002}{0.251}{0.220}{0.489}
-      \or % 3: PTv3 backbone.
-        \pwarchrect{0.224}{0.012}{0.414}{0.488}
-      \or % 4: Concatenated point cloud.
-        \pwarchrect{0.427}{0.502}{0.998}{0.978}
-      \or % 5: Predicted full-scene point flow.
-        \pwarchrect{0.427}{0.014}{0.998}{0.489}
-      \or % 6: Scene points and DINOv3.
-        \pwarchrect{0.002}{0.012}{0.219}{0.245}
-      \or % 7: URDF and joint-action conversion.
-        \pwarchrect{0.002}{0.851}{0.421}{0.997}
-      \or % 8: Robot flows and time embedding.
-        \pwarchrect{0.002}{0.251}{0.220}{0.489}
-      \fi
-    \end{scope}
-    \pgfresetboundingbox
-    \path[use as bounding box]
-      (arch.south west) rectangle (arch.north east);
-  \end{tikzpicture}%
+  }%
 }
 
 \begin{frame}{Architecture overview}
   \centering
-  \paperfig{height=5.7cm}{figs/fig2_overview.pdf}{Fig.~2}
+  \pwarchitecturefocus{5.7cm}{0}
+  \credit{Fig.~2, cropped; \S3.1}
 \end{frame}
 
 
 \begin{frame}{Architecture: scene state}
   \centering
-
-  \begin{tikzpicture}
-    \node[anchor=south west,inner sep=0pt] (arch) at (0,0)
-      {\includegraphics[height=5.7cm]{figs/fig2_overview.pdf}};
-
-    \begin{scope}[x={(arch.south east)},y={(arch.north west)}]
-      % Highlight RGB-D observation
-      \pwarchrect{0.004}{0.505}{0.414}{0.846}
-
-      % Highlight scene points + DINOv3 features
-      \pwarchrect{0.002}{0.012}{0.219}{0.245}
-    \end{scope}
-  \end{tikzpicture}
-
-  \credit{Fig.~2, highlighted; \S3.1}
+  \pwarchitecturefocus{5.7cm}{1}
+  \credit{Fig.~2, cropped and highlighted; \S3.1}
 \end{frame}
 
 \begin{frame}[t]{Scene state representation: 3D points and visual features}
@@ -494,21 +479,8 @@
 
 \begin{frame}{Architecture: robot action}
   \centering
-
-  \begin{tikzpicture}
-    \node[anchor=south west,inner sep=0pt] (arch) at (0,0)
-      {\includegraphics[height=5.7cm]{figs/fig2_overview.pdf}};
-
-    \begin{scope}[x={(arch.south east)},y={(arch.north west)}]
-      % Top: URDF and proposed robot joint trajectory
-      \pwarchrect{0.002}{0.851}{0.421}{0.997}
-
-      % Bottom: robot point flows and time embeddings
-      \pwarchrect{0.002}{0.251}{0.220}{0.489}
-    \end{scope}
-  \end{tikzpicture}
-
-  \credit{Fig.~2, highlighted; \S3.1}
+  \pwarchitecturefocus{5.7cm}{2}
+  \credit{Fig.~2, cropped and highlighted; \S3.1}
 \end{frame}
 
 
@@ -529,59 +501,61 @@
     \vspace{6pt}
     \footnotesize
     \begin{itemize}\setlength{\itemsep}{9pt}
-      \item<1-> \textbf{URDF}: robot links, joints, and geometry.
-      \item<2-> $\mathbf u_j$: a sampled surface point fixed to a robot link.
-      \item<3-> $\mathbf q_{t+k}$: proposed joint configuration at future step $k$.
+      \item \textbf{URDF}: robot links, joints, and geometry.
+      \item $\mathbf u_j$: a sampled surface point fixed to a robot link.
+      \item $\mathbf q_{t+k}$: proposed joint configuration at future step $k$.
     \end{itemize}
 
     \column{0.47\textwidth}
+    \uncover<2->{%
     {\small\bfseries\color{pw}Construct the point-flow action}\par
     \vspace{6pt}
     \footnotesize
     \begin{itemize}\setlength{\itemsep}{10pt}
-      \item<4-> Forward kinematics computes each point's future 3D position,
+      \item Forward kinematics computes each point's future 3D position,
         $\mathbf r_{t+k,j}$.
-      \item<4-> Repeat over the proposed trajectory.
+      \item Repeat over the proposed trajectory.
         In practice, sample \pw{300--500 points per gripper}.
     \end{itemize}
+    }
   \end{columns}
   \vfill
   \credit{\S3.1, action representation; \S5.2}
 \end{frame}
 
 
-\begin{frame}{Architecture: predicting 3D displacement}
+\begin{frame}{Architecture: PointWorld}
+  \centering
+  \pwarchitecturefocus{5.7cm}{3}
+  \credit{Fig.~2, cropped and highlighted; \S3.1}
+\end{frame}
+
+\begin{frame}{PointWorld: processing scene and action}
   \begin{columns}[c]
-
-    \column{0.48\textwidth}
+    \column{0.46\textwidth}
       \centering
-      % Highlight follows the explanation.
-      \only<1>{\pwarchitecturefocus{5.0cm}{4}}
-      \only<2>{\pwarchitecturefocus{5.0cm}{3}}
-      \only<3->{\pwarchitecturefocus{5.0cm}{5}}
-
-    \column{0.48\textwidth}
+      {\small\bfseries\color{pw}One combined point cloud}\par
+      \vspace{5pt}
+      \resizebox{5.4cm}{!}{%
+        \pwvisualcrop{8cm}{0.427}{0.502}{0.998}{0.978}}\par
+      \vspace{8pt}
+      {\footnotesize Scene points + robot point trajectories}\par
+    \column{0.50\textwidth}
       \footnotesize
-      \begin{itemize}\setlength{\itemsep}{10pt}
-
-        \item<1-> \textbf{Combine inputs}:
-          concatenate scene points and proposed robot
-          point trajectories into one point cloud.
-
-        \item<2-> \textbf{PTv3 backbone}:
-          process the combined cloud to produce
-          learned features for each point.
-
-        \item<3-> \textbf{MLP prediction head}:
-          convert scene-point features into
-          3D displacements.
-
+      \begin{itemize}\setlength{\itemsep}{14pt}
+        \item<1-> \textbf{Combine inputs}: put scene points and proposed robot trajectories into one point cloud.
+        \item<2-> \textbf{PTv3 backbone}: process the combined cloud to learn features for each point.
+        \item<3-> \textbf{MLP prediction head}: map scene-point features to 3D displacement vectors.
       \end{itemize}
-
-    
   \end{columns}
-  \credit{Fig.~2, highlighted; \S3.1;
-    PTv3 \citep{wu2023ptv3}}
+  \vfill
+  \credit{Fig.~2, combined point cloud; \S3.1; PTv3 \citep{wu2023ptv3}}
+\end{frame}
+
+\begin{frame}{Architecture: predicted outcome}
+  \centering
+  \pwarchitecturefocus{5.7cm}{5}
+  \credit{Fig.~2, cropped and highlighted; \S3.1}
 \end{frame}
 
 
@@ -631,6 +605,137 @@
 \credit{\S3.1; chunking ablation in \S5.2, Fig.~12}
 \end{frame}
 
+
+% Training transition: data comparison, then parameter update.
+\begin{frame}{Training PointWorld}
+  \centering
+  \resizebox{!}{5.9cm}{%
+\begin{tikzpicture}[
+  panel/.style={
+    draw=pw,
+    rounded corners=2pt,
+    inner sep=4pt,
+    align=center
+  },
+  model/.style={
+    draw=pw,
+    thick,
+    fill=pw!8,
+    rounded corners=2pt,
+    minimum height=1cm,
+    inner sep=7pt,
+    align=center
+  }
+]
+
+% Fixed bounds prevent movement between reveals.
+\path[use as bounding box]
+  (-2.1,-5.8) rectangle (12.2,3.2);
+
+\node[font=\small\bfseries,text=pw]
+  at (0,3.0) {Inputs};
+
+% PointWorld model.
+\node[model] (pwmodel) at (5.0,0) {
+  \mbox{\small\bfseries PointWorld}
+};
+
+% Input 1: observed scene state.
+
+  \node[panel] (scene) at (0,1.45) {
+    \begin{minipage}[c][2.2cm][c]{3.6cm}
+      \centering
+
+      {\small\bfseries Scene state}\par
+      \vspace{2pt}
+
+      {\footnotesize Observed 3D points}\par
+      \vspace{5pt}
+
+      \resizebox{!}{1cm}{%
+        \pwvisualcrop{11cm}{0.58}{0.60}{0.94}{0.76}}
+    \end{minipage}
+  };
+
+  \draw[->,thick,pw]
+    (scene.east) -- (pwmodel.north west);
+
+% Input 2: proposed robot action.
+
+  \node[panel] (action) at (0,-1.45) {
+    \begin{minipage}[c][2.2cm][c]{3.6cm}
+      \centering
+
+      {\small\bfseries Robot action}\par
+      \vspace{2pt}
+
+      {\footnotesize Robot 3D point flows}\par
+      \vspace{5pt}
+
+      \resizebox{!}{1.05cm}{%
+        \pwvisualcrop{16cm}{0.65}{0.74}{0.88}{0.94}}
+    \end{minipage}
+  };
+
+  \draw[->,thick,pw]
+    (action.east) -- (pwmodel.south west);
+
+% Output: predicted scene motion.
+
+  \node[panel] (outcome) at (10.1,0) {
+    \begin{minipage}[c][3.6cm][c]{3.8cm}
+      \centering
+
+      {\small\bfseries Predicted outcome}\par
+      \vspace{3pt}
+
+      {\footnotesize Full-scene 3D point flow}\par
+      \vspace{8pt}
+
+      \resizebox{3.4cm}{!}{%
+        \pwvisualcrop{7cm}{0.43}{0.08}{0.995}{0.48}}
+    \end{minipage}
+  };
+
+  \draw[->,thick,pw]
+    (pwmodel.east) -- (outcome.west);
+
+
+
+  \uncover<2->{
+    \node[panel] (truth) at (10.1,-4.8) {
+      \begin{minipage}[c][1.3cm][c]{3.8cm}
+        \centering
+        {\small\bfseries Ground-truth future}\par
+        {\small\bfseries 3D positions}\par
+        \vspace{2pt}
+        {\footnotesize From the training data}
+      \end{minipage}
+    };
+    \node[panel,fill=pw!8] (error) at (5.0,-4.8) {
+      \begin{minipage}[c][1.3cm][c]{3.0cm}
+        \centering
+        {\small\bfseries Training loss}\par
+        \vspace{3pt}
+        {\footnotesize Prediction error}
+      \end{minipage}
+    };
+    \draw[->,thick,pw] (truth.west) -- (error.east);
+    \draw[->,thick,pw] (outcome.south)
+      -- (10.1,-3.1) -- (6.0,-3.1)
+      -- ([xshift=1cm]error.north);
+  }
+  \uncover<2->{
+    \pwdiagramhighlight{error}
+    \draw[->,dashed,orange!90!red,line width=1.8pt]
+      (error.north) -- node[left,align=right,font=\small,
+        text=orange!90!red,xshift=-7pt]
+        {Update \\weights} (pwmodel.south);
+  }
+\end{tikzpicture}%
+  }
+  \credit{Fig.~2, adapted; \S3.1, training objective}
+\end{frame}
 
 \begin{frame}{Training objective: Huber residual}
   \small
@@ -824,7 +929,7 @@
 
 
 
-\begin{frame}{Planning cost: task success + robot motion}
+\begin{frame}{Planning cost: task cost + robot cost}
 
   \vspace{-8pt}
   \small
